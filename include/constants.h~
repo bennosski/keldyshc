@@ -1,0 +1,6 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+extern const int MEM_DATA_ALIGN=64;
+
+#endif

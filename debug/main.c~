@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <complex.h>
+#include <mkl.h>
+#include <memory.h>
+
+int MEM_DATA_ALIGN=64;
+typedef double complex cdouble;
+//--------------------------------------------------
+typedef struct
+{
+  cdouble * M;
+  int sig;
+  int norb;
+  int ntau;
+  double dtau; 
+}
+matsubara;
+//--------------------------------------------------
+void MxM(const int order, matsubara * restrict A, cdouble * Cmk)
+{
+  int iorb, korb, m, k, l;
+  for(iorb=0; iorb<norb; iorb++)
+    for(korb=0; korb<norb; korb++)
+    {
+      for(m=ntau-order; m<ntau; m++)
+        for(k=ntau-order; k<ntau; k++)
+	  for(l=0; l<order; l++)
+	  {    
+
+		  
+	  }
+    }
+  
+  int x;  
+  for(x=0; x<A->norb; x++)
+  {
+    printf("%f %f\n", creal(A->M[x]), cimag(A->M[x]));
+  }
+
+}
+//--------------------------------------------------
+int main()
+{
+  printf("hello world\n");
+
+  matsubara A;
+
+  A.ntau = 1000;
+  A.dtau = 0.1;
+  A.norb = 4;
+  A.sig = -1;
+
+  int order = 6;
+
+  A.M = (cdouble *)MKL_malloc(A.ntau*A.norb*A.norb*sizeof(cdouble), MEM_DATA_ALIGN);
+
+  printf("A norb %d\n", A.norb);
+
+  A.M[0] = 0.5 + 0.3*I;
+  A.M[2] = 0.2 + 0.2*I;
+
+  cdouble * Cmk = (cdouble *)MKL_calloc(A.ntau*A.norb*A.ntau*A.norb, sizeof(cdouble), MEM_DATA_ALIGN);
+
+  MxM(order, &A, Cmk);
+
+  return 0;
+}

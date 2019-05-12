@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <complex.h>
+#include <mkl.h>
+#include <memory.h>
+#include "params.h"
+//#include "integration.h"
+#include "constants.h"
+//#include "matsubara.h"
+A
+/*
+
+
+void test(){
+  //printf("test params %d %d %f\n", norb, ntau, dtau);
+};
+
+*/
+
+//--------------------------------------------------
+int main()
+{
+  printf("hello world\n");
+
+  //integrator integ;
+  //init_integrator(&integ);
+
+  //matsubara A;
+  //init_matsubara(&A);
+  
+  //A.M = (cdouble *)MKL_malloc(ntau*norb*norb*sizeof(cdouble), MEM_DATA_ALIGN);
+
+  printf("norb %d\n", norb);
+
+
+  //A.M[0] = 0.5 + 0.3*I;
+  //A.M[2] = 0.2 + 0.2*I;
+
+  cdouble * Cmk = (cdouble *)MKL_calloc(ntau*norb*ntau*norb, sizeof(cdouble), MEM_DATA_ALIGN);
+
+
+  /*
+  //MxM(order, &A, Cmk);
+
+  */
+
+  //test();
+
+  return 0;
+}

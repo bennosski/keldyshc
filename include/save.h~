@@ -1,0 +1,10 @@
+#ifndef SAVE_H
+#define SAVE_H
+
+#include "constants.h"
+
+void save(const char * filename, const cdouble * arr);
+
+
+
+#endif

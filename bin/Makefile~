@@ -1,0 +1,27 @@
+CC = icc
+
+CCOPTS = -O2 -restrict
+MKL = -mkl=sequential
+LIBRARIES = ${MKL} -lrt
+
+SRCFILES = main.o matsubara.o integration.o params.o constants.o
+
+all: ${SRCFILES}
+	${CC} ${CCOPTS} -o keldysh $? ${LIBRARIES}
+	make clean
+
+#%.o: ../src/%.c
+#	${CC} -c -I../include ${CCOPTS} ${MKL} ../include/params.h $<
+
+%.o: ../src/%.c
+	${CC} -c -I../include ${CCOPTS} ${MKL} $<
+
+debug:
+	${CC} -g -o a.out main.c ${LIBRARIES}
+
+test:
+	${CC} -g -o a.out test.c ${LIBRARIES}
+
+
+clean:
+	rm *.o

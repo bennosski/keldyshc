@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <complex.h>
+
+void function(int order, double complex * arr)
+{
+  printf("order %d\n", order);
+  
+  for(int i=0; i<4; i++)
+  {
+    printf("%f, %f\n", creal(arr[i]), cimag(arr[i]));
+  }
+}
+
+void main()
+{
+  printf("hello world\n");
+
+  double complex * c = (double complex *)calloc(4, sizeof(double complex *));
+
+  int x = 3;
+  
+  printf("hi\n");
+
+  function(x);
+
+}
+
+
+/*
+typedef struct
+{
+  int * arr;
+  int x; 
+  double complex * arrc;
+}
+object;
+
+void function(int order, object * A)
+{
+  printf("order %d\n", order);
+  printf("A->x %d\n", A->x);
+  int i;
+  for(i=0; i<A->x; i++)
+  {
+     //printf("%d   (%f,%f)", A->arr[i], creal(A->arrc[i]), cimag(A->arrc[i]));
+     printf("%d\n", A->arr[i]);
+  }
+}
+
+
+int main()
+{
+  printf("hello world\n");
+  int order = 6;
+
+  object * A;
+
+  printf("sizeof dc %d\n", sizeof(int));
+  printf("sizeof dc %d\n", sizeof(double));
+  printf("sizeof dc %d\n", sizeof(double complex));
+  printf("sizeof dc %d\n", sizeof(*A->arrc));
+
+  A->x = 2;
+  A->arr = (int *)calloc(A->x, sizeof(int));
+  //A->arrc = (double complex *)calloc(A->x, sizeof(double complex));
+  
+  //double complex * c = (double complex *)calloc(A->x, sizeof(double complex));
+
+  double complex * c = (double complex *)calloc(4, sizeof(double complex));
+
+
+  printf("A->x %d\n", A->x);
+
+  function(order, A);
+
+  return 0;
+}
+*/

@@ -1,0 +1,10 @@
+#include "matsubara.h"
+#include "params.h"
+#include "constants.h"
+
+void init_matsubara(matsubara * mat)
+{
+
+};
+
+
