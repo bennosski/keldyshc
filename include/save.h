@@ -3,7 +3,8 @@
 
 #include "constants.h"
 
-void save(const char * filename, const char * dsetname, const double * dset_data, const int * dimensions, int ndims);
+void saved(const char * filename, const char * dsetname, const double * dset_data, int len);
 
+void savez(const char * filename, const char * dsetname, const cdouble * dset_data, int len);
 
 #endif

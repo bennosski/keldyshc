@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <mkl.h>
 #include <memory.h>
 #include "params.h"
@@ -8,17 +9,41 @@
 #include "matsubara.h"
 #include "save.h"
 
-void test(matsubara * A){
+//--------------------------------------------------
+void test(matsubara * A)
+{
   printf("test params %d %d %f\n", norb, ntau, dtau);
 
   printf("%f %f %f \n", A->M[0], A->M[1], A->M[2]);
 };
 
+//--------------------------------------------------
+void test_dsave()
+{
+  double arr[] = {3.0, 4.0, 5.0};
+  printf("%f %f %f\n", arr[0], arr[1], arr[2]);
+  char * filename = "results/test_dsave.h5";
+  char * dsetname = "/dset";
+  dsave(filename, dsetname, arr, 3);
+}
+
+//--------------------------------------------------
+void test_zsave()
+{
+  cdouble arr[] = {3.0, 4.0*I, 5.0};
+  printf("%f %f %f\n", arr[0], arr[1], arr[2]);
+  zsave("results/test_zsave.h5", "/dset1", arr, 3);
+  zsave("results/test_zsave.h5", "/dset2", arr, 3);
+}
 
 //--------------------------------------------------
 int main()
 {
-  printf("hello world\n");
+  printf("cleaning up save files\n");
+  int status;
+  status = remove("results/test_zsave.h5");
+  status = remove("results/test_dsave.h5");
+  status = remove("results/GM.h5");  
 
   printf("dt %f\n", dt);
 
@@ -31,18 +56,18 @@ int main()
 
   matsubara A;
   init_matsubara(&A, -1);
-  
-  printf("norb %d\n", norb);
+  compute_G0M(&A);
 
-  A.M[0] = 0.5 + 0.3*I;
-  A.M[2] = 0.2 + 0.2*I;
+  //int dims = ntau*norb*norb;
+  zsave("results/GM.h5", "/M", A.M, ntau*norb*norb);
 
-  test(&A);
+  test_dsave();
+  //test_zsave();
+  //test(&A);
 
-  cdouble * Cmk = (cdouble *)MKL_calloc(ntau*norb*ntau*norb, sizeof(cdouble), MEM_DATA_ALIGN);
+  //cdouble * Cmk = (cdouble *)MKL_calloc(ntau*norb*ntau*norb, sizeof(cdouble), MEM_DATA_ALIGN);
 
-  MxM(&integ, &A, Cmk);
-
-  
+  //MxM(&integ, &A, Cmk);
+ 
   return 0;
 }
