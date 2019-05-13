@@ -4,13 +4,22 @@
 #include <unistd.h>
 #include <stdio.h>
 
-void dsave(const char * filename, const char * dsetname, const double * dset_data, int len)
+void dsave(const char * filename, const char * dsetname, const double * restrict dset_data, int len)
 {
   hid_t file_id, dataset_id, dataspace_id;
   //hsize_t * dims;
   herr_t status;
 
-  file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+  if( access(filename, F_OK) != -1)
+  {
+    file_id = H5Fopen(filename, H5F_ACC_RDWR, H5P_DEFAULT);
+  }
+  else
+  {
+    file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+  }
+
+  //file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
   /* Create the data space for the dataset. */
   //int i;
@@ -38,7 +47,7 @@ void dsave(const char * filename, const char * dsetname, const double * dset_dat
   status = H5Fclose(file_id);
 }
 
-void zsave(const char * filename, const char * dsetname, const cdouble * dset_data, int len)
+void zsave(const char * filename, const char * dsetname, const cdouble * restrict dset_data, int len)
 {
 
   hid_t file_id, dataset_id, dataspace_id, memtype, filetype;

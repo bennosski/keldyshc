@@ -11,7 +11,7 @@ typedef struct
   double * gregory_matrix_R;
 } integrator;
 
-void init_integrator(integrator * integ);
+void init_integrator(integrator * restrict integ);
 
 void MxM(const integrator * restrict integ, const matsubara * restrict A, cdouble * Cmk);
 

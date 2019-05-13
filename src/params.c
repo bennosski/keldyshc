@@ -12,10 +12,10 @@ int order;
 void init_params()
 {
   tmax    = 10.0;
-  nt      = 100;
+  nt      = 20;
   beta    = 4.0;
-  ntau    = 100;
-  norb    = 4;
+  ntau    = 40;
+  norb    = 3;
   order   = 6;
 
   dt = tmax/(nt-1);

@@ -1,18 +1,12 @@
 #include "matsubara.h"
 #include "params.h"
 #include "constants.h"
-#include <stdlib.h>
 
 void init_matsubara(matsubara * A, int sig)
 {
   A->M = (cdouble *)MKL_malloc(ntau*norb*norb*sizeof(cdouble), MEM_DATA_ALIGN);
 
   A->sig = sig;
-}
-
-inline double randd()
-{
-  return (double)rand()/RAND_MAX;
 }
 
 void compute_G0M(matsubara * A)
@@ -23,7 +17,7 @@ void compute_G0M(matsubara * A)
   for(i=0; i<ntau; i++)
     for(a=0; a<norb; a++)
       for(b=0; b<norb; b++)
-	A->M[i+N1*a+N2*b] = randd() + I * randd();
+	A->M[i+N1*a+N2*b] = zrand();
 }
 
 

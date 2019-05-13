@@ -11,7 +11,7 @@ INCLUDE = -I$(HDFROOT)/include
 MPI_COMPILE_FLAGS = $(shell mpicc --showme:compile)
 MPI_LINK_FLAGS = $(shell mpicc --showme:link)
 
-SRCFILES = main.o matsubara.o integration.o params.o constants.o save.o
+SRCFILES = main.o matsubara.o integration.o params.o constants.o save.o volterra.o
 
 all: ${SRCFILES}
 	${CC} ${CCOPTS} $(MPI_COMPILE_FLAGS) -o keldysh $? ${LIBRARIES} $(LIBS) $(INCLUDE) $(MPI_LINK_FLAGS)

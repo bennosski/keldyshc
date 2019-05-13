@@ -1,18 +1,45 @@
 import time
 import numpy as np
+import h5py
 
 class A:
     pass
 
-A.ntau  = 1000
-A.dtau  = 0.1
-A.norb  = 4
+A.tmax  = 10.0; 
+A.nt    = 20;
+A.beta  = 4.0
+A.ntau  = 40
+A.norb  = 3
 A.order = 6
-A.M = np.random.randn(A.ntau, A.norb, A.norb)
-A.sig = -1
 
-rcorr = np.random.randn(A.order, A.order, A.order)
-gregory_matrix_M = np.random.randn(A.ntau, A.ntau)
+A.sig   = -1
+A.dtau  = A.beta/(A.ntau-1)
+
+f = h5py.File("results/GM.h5")
+arr = f['/M'][...]
+A.M = arr[:]['real'] + 1j*arr[:]['imag']
+f.close()
+
+f = h5py.File("results/integ.h5")
+arr = f['/rcorr'][...]
+rcorr = arr[:]
+arr = f['/gmM'][...]
+gregory_matrix_M = arr[:]
+arr = f['/gmR'][...]
+gregory_matrix_R = arr[:]
+f.close()
+
+rcorr = np.reshape(rcorr, [A.order, A.order, A.order], order='F')
+
+A.M = np.reshape(A.M, [A.ntau, A.norb, A.norb], order='F')
+
+gregory_matrix_M = np.reshape(gregory_matrix_M, [A.ntau, A.ntau], order='F')
+
+gregory_matrix_R = np.reshape(gregory_matrix_R, [A.nt, A.nt], order='F')
+
+#A.M = np.random.randn(A.ntau, A.norb, A.norb)
+#rcorr = np.random.randn(A.order, A.order, A.order)
+#gregory_matrix_M = np.random.randn(A.ntau, A.ntau)
 
 def prep_MxM(A):
     '''
@@ -48,10 +75,24 @@ def prep_MxM(A):
 
             for m in range(order,ntau):
                 Cmk[m,iorb,:m+1,korb] += -1j*dtau * gregory_matrix_M[m,:m+1] * A.M[np.arange(m,-1,-1),iorb,korb]                        
-    return np.reshape(Cmk, [ntau*norb, ntau*norb])
+    return np.reshape(Cmk, [ntau*norb, ntau*norb], order='F')
 
 
 t = time.time()
 Cmk = prep_MxM(A)
 print('took {:.4e}'.format(time.time()-t))
 
+print('Cmk')
+print(Cmk)
+
+f = h5py.File("results/Cmk.h5")
+arr = f['/Cmk'][...]
+Cmkc = arr[:]['real'] + 1j*arr[:]['imag']
+f.close()
+
+Cmkc = np.reshape(Cmkc, [A.ntau*A.norb, A.ntau*A.norb], order='F')
+print('Cmkc')
+print(Cmkc)
+
+print('difference')
+print(np.mean(np.abs(Cmk-Cmkc)))
