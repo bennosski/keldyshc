@@ -16,18 +16,14 @@ SRCFILES = main.o matsubara.o integration.o params.o constants.o save.o volterra
 all: ${SRCFILES}
 	${CC} ${CCOPTS} $(MPI_COMPILE_FLAGS) -o keldysh $? ${LIBRARIES} $(LIBS) $(INCLUDE) $(MPI_LINK_FLAGS)
 
+test: ${SRCFILES}
+	${CC} $(MPI_COMPILE_FLAGS) -o ../test/keldysh_test $? ${LIBRARIES} $(LIBS) $(INCLUDE) $(MPI_LINK_FLAGS)
 
-#%.o: ../src/%.c
-#	${CC} -c -I../include ${CCOPTS} ${MKL} ../include/params.h $<
+debug: ${SRCFILES}
+	${CC} -g -O0 -debug all -traceback -o keldysh_debug $? ${LIBRARIES} $(LIBS) $(INCLUDE) $(MPI_LINK_FLAGS)
 
 %.o: ../src/%.c
 	${CC} $(MPI_COMPILE_FLAGS) -c -I../include ${CCOPTS} ${MKL} $< $(LIBS) $(INCLUDE) $(MPI_LINK_FLAGS)
-
-debug:
-	${CC} $(MPI_COMPILE_FLAGS) -g -o a.out main.c ${LIBRARIES} $(LIBS) $(INCLUDE) $(MPI_LINK_FLAGS)
-
-test:
-	${CC} $(MPI_COMPILE_FLAGS) -g -o a.out test.c ${LIBRARIES} $(LIBS) $(INCLUDE) $(MPI_LINK_FLAGS)
 
 
 clean:

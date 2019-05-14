@@ -29,6 +29,43 @@ void test_zsave()
   zsave("results/test_zsave.h5", "/dset2", arr, 3);
 }
 
+void init(integrator * ptr)
+{
+  ptr->rcorr = (double *)MKL_malloc(order*order*order*sizeof(double), MEM_DATA_ALIGN);
+
+  ptr->gregory_matrix_M = (double *)MKL_malloc(ntau*ntau*sizeof(double), MEM_DATA_ALIGN);
+
+  ptr->gregory_matrix_R = (double *)MKL_malloc(nt*nt*sizeof(double), MEM_DATA_ALIGN);
+
+  /*
+  int m, k, l;
+  for(l=0; l<order; l++)
+    for(k=0; k<order; k++)
+      for(m=0; m<order; m++)
+	ptr->rcorr[m + order*k + order*order*l] = drand();
+  */
+  
+  init_rcorr(ptr->rcorr);
+
+  init_gregory_matrix_M(ptr->gregory_matrix_M);
+}
+
+void local_init_integrator(integrator * restrict integ)
+{
+  integ->rcorr = (double *)MKL_malloc(order*order*order*sizeof(double), MEM_DATA_ALIGN);
+
+  integ->gregory_matrix_M = (double *)MKL_malloc(ntau*ntau*sizeof(double), MEM_DATA_ALIGN);
+
+  integ->gregory_matrix_R = (double *)MKL_malloc(nt*nt*sizeof(double), MEM_DATA_ALIGN);
+
+  init_rcorr(integ->rcorr);
+
+  init_gregory_matrix_M(integ->gregory_matrix_M);
+
+  init_gregory_matrix_R(integ->gregory_matrix_R);
+}
+
+
 //--------------------------------------------------
 int main()
 {
@@ -39,25 +76,60 @@ int main()
   status = remove("results/GM.h5");  
   status = remove("results/integ.h5");
   status = remove("results/Cmk.h5"); 		 
-
-  printf("dt %f\n", dt);
-
+  
   init_params();
 
-  printf("dt %f\n", dt);
+  integrator integ;
+  //init_integrator(&integ);
+  //local_init_integrator(&integ);  
 
+  printf("success\n");
+
+  init_integrator(&integ);
+
+  //integrator * ptr = &integ;
+
+  //init(ptr);
+  
+  /*
+  ptr->rcorr = (double *)MKL_malloc(order*order*order*sizeof(double), MEM_DATA_ALIGN);
+
+  ptr->gregory_matrix_M = (double *)MKL_malloc(ntau*ntau*sizeof(double), MEM_DATA_ALIGN);
+
+  ptr->gregory_matrix_R = (double *)MKL_malloc(nt*nt*sizeof(double), MEM_DATA_ALIGN);
+
+  init_rcorr(ptr->rcorr);
+
+  init_gregory_matrix_M(ptr->gregory_matrix_M);
+  */
+
+  printf("dt %f\n", dt);
+  printf("dtau %f\n", dtau);
+
+  /*
   integrator integ;
   init_integrator(&integ);
+  */
+
+  printf("h1\n");
+
+  return 0;
 
   dsave("results/integ.h5", "/rcorr", integ.rcorr, order*order*order);
   dsave("results/integ.h5", "/gmM", integ.gregory_matrix_M, ntau*ntau);
   dsave("results/integ.h5", "/gmR", integ.gregory_matrix_R, nt*nt);
 
+  printf("h2\n");
+
   matsubara A;
   init_matsubara(&A, -1);
   compute_G0M(&A);
 
+  printf("h3\n");
+
   zsave("results/GM.h5", "/M", A.M, ntau*norb*norb);
+
+  printf("h4\n");
 
   test_dsave();
   test_zsave();
