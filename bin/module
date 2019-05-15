@@ -3,3 +3,4 @@
 module load icc/2019
 module load imkl/2019
 module load hdf5
+module load py-h5py/2.8.0_py36

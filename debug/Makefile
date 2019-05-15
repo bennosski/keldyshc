@@ -10,6 +10,10 @@ all:
 debug:
 	${CC} -g -o a.out main.c ${LIBRARIES}
 
+linalg:
+	${CC} -o linalg linalg.c ${LIBRARIES}
+
+
 mklmalloc: mklmalloc.o
 	${CC} -o mklmalloc mklmalloc.c ${LIBRARIES}
 
