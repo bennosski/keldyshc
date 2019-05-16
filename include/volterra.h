@@ -1,10 +1,12 @@
 #ifndef VOLTERRA_H
 #define VOLTERRA_H
 
-void init_rcorr(double * restrict rcorr);
+#include "constants.h"
 
-void init_gregory_matrix_M(double * restrict gmM);
+void init_rcorr(cdouble * restrict rcorr);
 
-void init_gregory_matrix_R(double * restrict gmR);
+void init_gregory_matrix_M(cdouble * restrict gmM);
+
+void init_gregory_matrix_R(cdouble * restrict gmR);
 
 #endif

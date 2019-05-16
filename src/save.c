@@ -115,6 +115,53 @@ void zsave(const char * filename, const char * dsetname, const cdouble * restric
   status = H5Fclose(file_id);  
 }
 
+void dload(const char * filename, const char * dsetname, cdouble * restrict dsetdata, int len)
+{
+  hid_t file, dset;
+  herr_t status;
 
+  file = H5Fopen(filename, H5F_ACC_RDONLY, H5P_DEFAULT);
+  dset = H5Dopen(file, dsetname, H5P_DEFAULT);
+
+  double * data = (double *)MKL_malloc(len*sizeof(double), MEM_DATA_ALIGN);
+
+  /*
+   * Read the data using the default properties.
+   */
+  status = H5Dread(dset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data);
+
+  int i;
+  for(i=0; i<len; i++)
+    dsetdata[i] = (cdouble) data[i];
+
+  /*
+  int m, k, l;
+  for (m=0; m<order; m++)
+  {
+    for (k=0; k<order; k++)
+    {
+      for (l=0; l<order; l++)
+      {
+	double d = data[m+order*k+order*order*l];
+	printf("%.3f ", d);
+	dsetdata[m+order*k+order*order*l] = (cdouble)d;
+      }
+      printf("\n");
+    }
+    printf("\n");
+  }
+  */
+
+  /*
+   * Close and release resources.
+   */
+
+  MKL_free(data);
+
+  //status = H5Tclose(memtype);
+  status = H5Dclose(dset);
+  status = H5Fclose(file);
+
+}
 
 

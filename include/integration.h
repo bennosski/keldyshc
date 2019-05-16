@@ -6,9 +6,9 @@
 
 typedef struct
 {
-  double * rcorr;
-  double * gregory_matrix_M;
-  double * gregory_matrix_R;
+  cdouble * rcorr;
+  cdouble * gregory_matrix_M;
+  cdouble * gregory_matrix_R;
 } integrator;
 
 void init_integrator(integrator * restrict integ);

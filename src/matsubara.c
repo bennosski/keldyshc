@@ -1,6 +1,7 @@
 #include "matsubara.h"
 #include "params.h"
 #include "constants.h"
+#include "util.h"
 
 void init_matsubara(matsubara * A, int sig)
 {

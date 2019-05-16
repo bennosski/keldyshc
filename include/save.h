@@ -7,4 +7,6 @@ void dsave(const char * filename, const char * dsetname, const double * restrict
 
 void zsave(const char * filename, const char * dsetname, const cdouble * restrict dset_data, int len);
 
+void dload(const char * filename, const char * dsetname, cdouble * restrict dset_data, int order);
+
 #endif
