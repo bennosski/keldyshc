@@ -5,6 +5,14 @@
 #include <mkl.h>
 #include "save.h"
 
+
+void mult(const cdouble * restrict A, const cdouble * restrict B, const cdouble * C, int M, int N, int K, double alpha2)
+{
+  cdouble alpha=1.0, _beta=0.0;
+  cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, M, N, K, &alpha, arr1, M, arr2, N, &_beta, ret, M);
+}
+
+
 /*
 void test_linalg()
 {

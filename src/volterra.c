@@ -4,6 +4,7 @@
 #include "util.h"
 #include "save.h"
 #include <stdlib.h>
+#define amax(x,y) ((x) >= (y)) ? (x) : (y)
 
 /*
 void start_poly_w(double * wpoly)
@@ -145,38 +146,36 @@ void init_rcorr(cdouble * restrict rcorr)
   dload("weights.h5", dsetname, rcorr, order*order*order);
 }
 
-void init_gregory_matrix_M(cdouble * restrict gmM)
+void init_gregory_matrix(cdouble * restrict G, int N)
 {
-
-  cdouble wstart[(2*order-1)*order];
+  const int W = 2*order-1;
+  cdouble wstart[W*order];
   cdouble omega[order];
 
   char dsetname[32];
   sprintf(dsetname, "/wstart_p%d", order);
-  dload("weights.h5", dsetname, wstart, (2*order-1)*order);
+  dload("weights.h5", dsetname, wstart, W*order);
   sprintf(dsetname, "/omega_p%d", order);
   dload("weights.h5", dsetname, omega, order);
 
   int i, j;
-  for(i=0; i<ntau; i++)
-    for(j=0; j<ntau; j++)
-      gmM[i + ntau*j] = drand();
+  for (i=1; i<N; i++)
+  {
+    if (i < 2*order-2)
+      for (j=0; j<order; j++)
+	G[i + N*j] = wstart[i + W*j];	  
+    else
+      for (j=0; j<order; j++)
+	G[i + N*j] = wstart[W-1 + W*j];
+
+    if (i >= order)
+    {
+      const int jmax = amax(i-order+1, order);
+      for (j=jmax; j<i+1; j++)
+	G[i + N*j] = omega[i-j];
+
+      for (j=order; j<i-order+1; j++)
+	G[i + N*j] = 1.0;
+    }
+  }
 }
-
-void init_gregory_matrix_R(cdouble * restrict gmR)
-{
-  cdouble wstart[(2*order-1)*order];
-  cdouble omega[order];
-
-  char dsetname[32];
-  sprintf(dsetname, "/wstart_p%d", order);
-  dload("weights.h5", dsetname, wstart, (2*order-1)*order);
-  sprintf(dsetname, "/omega_p%d", order);
-  dload("weights.h5", dsetname, omega, order);
-
-  int i, j;
-  for(j=0; j<nt; j++)
-    for(i=0; i<nt; i++)
-      gmR[i + nt*j] = drand();
-}
-

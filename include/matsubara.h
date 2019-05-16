@@ -6,10 +6,11 @@
 typedef struct
 {
   cdouble * M;
+  cdouble * delta;
   int sig;
 } matsubara;
 
-void init_matsubara(matsubara * mat, int sig);
+void init_matsubara(const matsubara * mat, int sig);
 
 #endif
 

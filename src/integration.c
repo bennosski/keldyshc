@@ -2,6 +2,7 @@
 #include "params.h"
 #include "matsubara.h"
 #include <mkl.h>
+#include "linalg.h"
 
 void init_integrator(integrator * restrict integ)
 {
@@ -13,13 +14,13 @@ void init_integrator(integrator * restrict integ)
 
   init_rcorr(integ->rcorr);
 
-  init_gregory_matrix_M(integ->gregory_matrix_M);
+  init_gregory_matrix(integ->gregory_matrix_M, ntau);
 
-  init_gregory_matrix_R(integ->gregory_matrix_R);
+  init_gregory_matrix(integ->gregory_matrix_R, nt);
 }
 
 //---------------------------------------------------
-void MxM(const integrator * restrict integ, const matsubara * restrict A, cdouble * Cmk)
+void prep_MxM(const integrator * restrict integ, const matsubara * restrict A, cdouble * Cmk)
 {
   
   int iorb, korb, m, k, l;
@@ -54,7 +55,7 @@ void MxM(const integrator * restrict integ, const matsubara * restrict A, cdoubl
 }
 
 //---------------------------------------------------
-void MxM_fast(const integrator * restrict integ, const matsubara * restrict A, cdouble * Cmk)
+void prep_MxM_fast(const integrator * restrict integ, const matsubara * restrict A, cdouble * Cmk)
 {
   
   int iorb, korb, m, k, l;
@@ -107,5 +108,28 @@ void MxM_fast(const integrator * restrict integ, const matsubara * restrict A, c
 	for(k=0; k<m+1; k++)
 	  Cmk[m + iorb*N1 + k*N2 + korb*N3] += -I*dtau * integ->gregory_matrix_M[m + k*N1] * A->M[m-k + iorb*N1 + korb*N2];
     }  
+}
+
+void MxM(const matsubara * restrict A, const matsubara * restrict B, cdouble * restrict ret)
+{
+  int m, a, b;
+  
+  const int N1 = ntau;
+  const int N2 = ntau*norb;
+
+  // OPTIMIZE: matrix product over orbitals
+  for(m=0; m<ntau; m++)
+    for(a=0; a<norb; a++)
+      for(b=0; b<norb; b++)
+	for(c=0; c<norb; c++)
+	  ret[m + a*N1 + c*N2] = A->M[m + a*N1 + b*N2]*B.delta[b + c*norb];
+
+
+  cdouble * Cmk = (cdouble *)MKL_malloc(ntau*norb*norb*sizeof(cdouble), MEM_DATA_ALIGN);
+  
+    
+  mult(A, B, ret, ntau*norb, ntau*norb, norb, 1.0);
+
+  MKL_free(Cmk);
 }
 
